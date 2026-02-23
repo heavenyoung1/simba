@@ -3,9 +3,9 @@ from enum import Enum
 
 class RegisterType(Enum):
     '''
-    One of the four Modbus address space tables.
+    Одна из четырёх таблиц адресного пространства Modbus.
 
-    Defines the register type and its access rules.
+    Определяет тип регистра и правила доступа к нему.
     '''
     COIL = 'coil'                  # DO  — read/write, 1 bit
     DISCRETE_INPUT = 'discrete'    # DI  — read only,  1 bit
@@ -14,14 +14,14 @@ class RegisterType(Enum):
 
 @dataclass(frozen=True)
 class ModBusAddress:
-    '''Unique coordinate of a single register in the Modbus address space.
+    '''Уникальная координата одного регистра в адресном пространстве Modbus.
 
-    Identifies a register across three dimensions: table type, register number,
-    and device address on the bus. Has no knowledge of the data type stored
-    (int16, float32, etc.) — that is the responsibility of a higher-level object
-    (e.g. Tag or RegisterDefinition).
+    Идентифицирует регистр по трём измерениям: тип таблицы, номер регистра
+    и адрес устройства на шине. Не знает ничего о типе хранимых данных
+    (int16, float32 и т.д.) — это ответственность вышестоящего объекта
+    (например, Tag или RegisterDefinition).
 
-    Value Object: immutable, compared by value, usable as a dictionary key.
+    Value Object: иммутабелен, сравнивается по значению, пригоден как ключ словаря.
     '''
     register_type: RegisterType
     address: int
