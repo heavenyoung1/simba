@@ -8,5 +8,5 @@ class ScalingRule:
     max_raw: float   # например 4000.0 — 20000.0
 
     def scale(self, eu_value: float) -> float:
-        result = (self.max_raw - self.min_raw)
-            
+        ratio = (eu_value - self.min_eu) / (self.max_eu - self.min_eu)
+        return self.min_raw  + ratio * (self.max_raw - self.min_raw)

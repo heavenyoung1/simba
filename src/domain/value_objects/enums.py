@@ -9,3 +9,11 @@ class DataType(Enum):
 
 class Driver(Enum):
     MBTCP = 'MBTCP'
+
+class XMLHeadObjects(Enum):
+    ANALOGS = 'AnalogOutputs'
+    DISCRETES = 'DiscreteInputs'
+
+class XMLObjects(Enum):
+    AI = 'Analog'
+    DI = 'Discrete'
