@@ -1,0 +1,11 @@
+from enum import Enum
+
+class Direction(Enum):
+    WRITING = 'WRITING'
+    READING = 'READING'
+
+class DataType(Enum):
+    USHORT = 'USHORT'
+
+class Driver(Enum):
+    MBTCP = 'MBTCP'
