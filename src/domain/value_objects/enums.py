@@ -6,6 +6,7 @@ class Direction(Enum):
 
 class DataType(Enum):
     USHORT = 'USHORT'
+    BOOLEAN = 'BOOLEAN'
 
 class Driver(Enum):
     MBTCP = 'MBTCP'

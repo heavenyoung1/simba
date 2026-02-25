@@ -1,4 +1,13 @@
-from src.domain.value_objects.enums import XMLHeadObjects, XMLObjects
+from src.domain.value_objects.enums import (
+    XMLHeadObjects, 
+    XMLObjects, 
+    DataType,
+    Direction,
+    Driver,
+)
+from src.domain.value_objects.modbus_address import RegisterAddress
+from src.domain.value_objects.scaling import ScalingRule
+
 from src.domain.entities.analog import AnalogSignal
 from src.domain.entities.discrete import DiscreteSignal
 
@@ -16,33 +25,6 @@ class XMLParser:
         self.xml_head_objects = xml_head_objects
         self.xml_iter_objects = xml_iter_objects
 
-    # def parse(self, file_path: str):
-    #     self.file_path = Path(file_path)
-    #     tree = ET.parse(self.file_path)
-    #     root = tree.getroot()
-    #     print(root)
-    #     #analog = root.find(XMLObjects.ANALOGS)
-    #     analog = root.find('AnalogOutputs')
-    #     print(analog)
-    #     aus = analog.find('Analog')
-    #     print(aus.find('Direction').text)   # → 'WRITING'
-    #     print(aus.find('Name').text)        # → 'KKC004'
-
-    # def parse(self, file_path: str):
-    #     self.file_path = Path(file_path)
-    #     tree = ET.parse(self.file_path)
-    #     root = tree.getroot()
-    #     print(root)
-    #     # analog_outputs = root.find('AnalogOutputs')
-    #     # analogs = analog_outputs.findall('Analog')
-        
-    #     analog_outputs = root.find(XMLObjects.ANALOGS.value)
-    #     namesss = XMLObjects.ANALOGS.name
-    #     print(namesss)
-    #     analogs = analog_outputs.findall('Analog')
-        
-    #     print(analogs)
-
     def parse(self):
         tree = ET.parse(self.file_path)
         root = tree.getroot()
@@ -53,45 +35,67 @@ class XMLParser:
             print(elenment_outputs)
             if elenment_outputs == XMLHeadObjects.ANALOGS.value:
                 for iter_obj in elenment_outputs_obj:
-                    direction = iter_obj.find('Direction').text
+
+                    # Если значение не совпадает ни с одним — Python сам бросит ValueError
+                    direction = Direction(iter_obj.find('Direction').text)
+
                     tag = iter_obj.find('Name').text
                     name = iter_obj.find('Description').text
+
+                    # 2. Нужно сравнить что значение datatype совпадает со значениями в 
                     
                     address = iter_obj.find('Address')
                     driver = address.find('Driver')
-                    driver_name = driver.find('Name').text
+                    driver_name = Driver(driver.find('Name').text)
                     driver_type = driver.find('Type').text
-                    data_type = address.find('DataType').text
+                    raw_address = address.find('Address').text
+                    number_addrees = int(raw_address[2:])
 
+                    data_type = DataType(address.find('DataType').text)
 
-                    forced = iter_obj.find('Forced').text
-                    forced_value = iter_obj.find('ForcedValue').text
-                    forced_input = iter_obj.find('ForceInput').text
+                    mb_address = RegisterAddress(
+                        address=number_addrees,
+                        bit_index=None,
+                    )
+
+                    min_input = float(iter_obj.find('MinInput').text)
+                    max_input = float(iter_obj.find('MaxInput').text)
+                    min_output = float(iter_obj.find('MinOutput').text)
+                    max_output = float(iter_obj.find('MaxOutput').text)
 
                     scaling_enabled = iter_obj.find('Scaling').text.lower() == 'true'
-                    scaling = None
 
-                    if scaling_enabled:
-                        min_input = float(iter_obj.find('MinInput').text)
-                        max_input = float(iter_obj.find('MaxInput').text)
-                        min_output = float(iter_obj.find('MinOutput').text)
-                        max_output = float(iter_obj.find('MaxOutput').text)
-                    
-                    return AnalogSignal(
+                    scaling = ScalingRule(
+                        min_eu=min_input,
+                        max_eu=max_input,
+                        min_raw=min_output,
+                        max_raw=max_output,
+                    )
+
+                    forced = iter_obj.find('Forced').text.lower() == 'true'
+                    forced_value = float(iter_obj.find('ForcedValue').text)
+                    forced_input = iter_obj.find('ForceInput').text.lower() == 'true'
+
+                    signal = AnalogSignal(
                         direction=direction,
                         tag=tag,
                         name=name,
-                        address=address,
                         data_type=data_type,
-                        
-                        driver=driver,
-                        scaling=scaling,
+                        address=mb_address,
+                        driver=driver_name,
+                        scaling=scaling if scaling_enabled else None,
                         scaling_enabled=scaling_enabled,
                         forced=forced,
                         forced_input=forced_input,
                         forced_value=forced_value,
+                    )
+                    print(signal)
 
-    )
+
+
+                    
+                    
+
 
             elif elenment_outputs == XMLHeadObjects.DISCRETES.value:
                 for iter_obj in elenment_outputs:
