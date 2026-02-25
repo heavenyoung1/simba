@@ -28,11 +28,14 @@ class XMLParser:
     def parse(self):
         tree = ET.parse(self.file_path)
         root = tree.getroot()
+        output = {}
+
         for i in self.xml_head_objects:
             #print(i.name, i.value)
             elenment_outputs_obj = root.find(i.value)
             elenment_outputs = elenment_outputs_obj.tag
             print(elenment_outputs)
+            output[elenment_outputs] = []
             if elenment_outputs == XMLHeadObjects.ANALOGS.value:
                 for iter_obj in elenment_outputs_obj:
 
@@ -90,11 +93,10 @@ class XMLParser:
                         forced_value=forced_value,
                     )
                     print(signal)
+                    output[elenment_outputs].append(signal)
+                    print(output)
 
 
-
-                    
-                    
 
 
             elif elenment_outputs == XMLHeadObjects.DISCRETES.value:
