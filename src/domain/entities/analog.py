@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 from src.domain.value_objects.modbus_address import RegisterAddress
 from src.domain.value_objects.scaling import ScalingRule
-from domain.value_objects.enums import Driver, DataType, Direction
+from src.domain.value_objects.enums import Driver, DataType, Direction
 
 @dataclass
 class AnalogSignal:
@@ -15,9 +15,8 @@ class AnalogSignal:
     scaling: ScalingRule | None
     scaling_enabled: bool
 
-    forced: bool        # форсирование вообще включено?
-    forced_input: bool  # True = используем forced_eu, False = используем forced_raw
-    forced_raw: float   # Сырое значением имитируем (либо одно)
-    forced_eu: float    # Инженерное значение имитируем (либо другое)
+    forced: bool
+    forced_input: bool   # False = raw, True = EU
+    forced_value: float  # одно значение, интерпретация зависит от forced_input
 
 

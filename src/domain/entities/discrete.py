@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from src.domain.value_objects.modbus_address import RegisterAddress
-from domain.value_objects.enums import Driver, DataType, Direction
+from src.domain.value_objects.enums import Driver, DataType, Direction
 
 @dataclass
 class DiscreteSignal:
