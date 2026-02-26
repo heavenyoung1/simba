@@ -43,8 +43,10 @@ class XMLParser:
 
             elif element_tag == XMLHeadObjects.DISCRETES.value:
                 for iter_obj in element_obj:
-                    pass
+                    signal = self._parse_discret(iter_obj)
+                    output[element_tag].append(signal)
 
+        print(output)
         return output
 
     def _parse_analog(self, iter_obj) -> AnalogSignal:
@@ -55,6 +57,8 @@ class XMLParser:
         address = iter_obj.find('Address')
         driver = address.find('Driver')
         driver_name = Driver(driver.find('Name').text)
+        # TODO Возможно этот атрибут пригодится, когда будет парсинг не только MB
+        driver_type = driver.find('Type').text
         raw_address = address.find('Address').text
         number_address = int(raw_address[2:])
         data_type = DataType(address.find('DataType').text)
@@ -96,7 +100,42 @@ class XMLParser:
             forced_value=forced_value,
         )
     
+    def _parse_discret(self, iter_obj) -> DiscreteSignal:
+        direction = Direction(iter_obj.find('Direction').text)
+        tag = iter_obj.find('Name').text
+        name = iter_obj.find('Description').text
 
+        address = iter_obj.find('Address')
+        driver = address.find('Driver')
+        driver_name = Driver(driver.find('Name').text)
+        # TODO Возможно этот атрибут пригодится, когда будет парсинг не только MB
+        driver_type = driver.find('Type').text
+        raw_address = address.find('Address').text
+        number_address = int(raw_address[2:])
+        # Если это Дискрет, то тут же всегда BOOLEAN #TODO ПОДУМАТЬ
+        data_type = DataType(address.find('DataType').text)
+        # TODO Нужна ли тут валидация, если биты могут быть 0-15 ПОДУМАТЬ
+        bit_index = int(address.find('BitIndex').text)
+
+        mb_address = RegisterAddress(
+            address=number_address,
+            bit_index=bit_index,
+        )
+
+        forced = iter_obj.find('Forced').text.lower() == 'true'
+        forced_value = bool(iter_obj.find('ForcedValue').text)
+        inversed = iter_obj.find('Inversed').text
+
+        return DiscreteSignal(
+            direction=direction,
+            tag=tag,
+            name=name,
+            address=mb_address,
+            inversed=inversed,
+            driver=driver,
+            forced=forced,
+            forced_value=forced_value,
+        )
 
 xml_parser = XMLParser(
     file_path='src/infrastructure/test.xml',
