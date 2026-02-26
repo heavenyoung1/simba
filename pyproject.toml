@@ -24,6 +24,9 @@ line-length = 88
 target-version = "py313"
 src = ["src"]
 
+[tool.ruff.format]
+quote-style = "single"
+
 [tool.ruff.lint]
 select = [
     "E",    # pycodestyle errors

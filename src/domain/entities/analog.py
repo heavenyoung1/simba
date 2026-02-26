@@ -4,6 +4,7 @@ from src.domain.value_objects.modbus_address import RegisterAddress
 from src.domain.value_objects.scaling import ScalingRule
 from src.domain.value_objects.enums import Driver, DataType, Direction
 
+
 @dataclass
 class AnalogSignal:
     direction: Direction
@@ -16,7 +17,5 @@ class AnalogSignal:
     scaling_enabled: bool
 
     forced: bool
-    forced_input: bool   # False = raw, True = EU
+    forced_input: bool  # False = raw, True = EU
     forced_value: float  # одно значение, интерпретация зависит от forced_input
-
-

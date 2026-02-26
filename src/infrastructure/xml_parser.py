@@ -19,10 +19,10 @@ from src.application.logger import logger
 
 class XMLParser:
     def __init__(
-            self,
-            file_path: str,
-            xml_head_objects: XMLHeadObjects,
-            xml_iter_objects: XMLObjects,
+        self,
+        file_path: str,
+        xml_head_objects: XMLHeadObjects,
+        xml_iter_objects: XMLObjects,
     ):
         self.file_path = Path(file_path)
         self.xml_head_objects = xml_head_objects
@@ -64,7 +64,7 @@ class XMLParser:
             data_type = DataType(address.find('DataType').text)
             mb_address = RegisterAddress.from_modbus_string(
                 address.find('Address').text,
-                )
+            )
 
             min_input = float(iter_obj.find('MinInput').text)
             max_input = float(iter_obj.find('MaxInput').text)
@@ -115,9 +115,9 @@ class XMLParser:
             # TODO Нужна ли тут валидация, если биты могут быть 0-15 ПОДУМАТЬ
             bit_index = int(address.find('BitIndex').text)
             mb_address = RegisterAddress.from_modbus_string(
-                address.find('Address').text, 
+                address.find('Address').text,
                 bit_index=bit_index,
-                )
+            )
 
             forced = iter_obj.find('Forced').text.lower() == 'true'
             forced_value = iter_obj.find('ForcedValue').text.lower() == 'true'
@@ -135,6 +135,7 @@ class XMLParser:
             )
         except (AttributeError, ValueError) as e:
             raise ValueError(f'Ошибка парсинга дискретного сигнала "{tag}": {e}') from e
+
 
 xml_parser = XMLParser(
     file_path='src/infrastructure/test.xml',

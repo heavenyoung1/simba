@@ -8,9 +8,9 @@ class RegisterAddress:
 
     @classmethod
     def from_modbus_string(
-        cls, 
-        raw: str, 
+        cls,
+        raw: str,
         bit_index: int | None = None,
-        ) -> 'RegisterAddress':
+    ) -> 'RegisterAddress':
         '''Парсит адрес вида 'MB4' → RegisterAddress(address=4, ...)'''
         return cls(address=int(raw[2:]), bit_index=bit_index)
