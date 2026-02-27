@@ -1,6 +1,8 @@
 from src.domain.entities.analog import AnalogSignal
 from src.domain.entities.discrete import DiscreteSignal
 
+from src.application.logger import logger
+
 class RegisterAssembler:
     def build(
         self, 
@@ -38,8 +40,5 @@ class RegisterAssembler:
                 
                 registers[reg_num] = int(value)
                 
+        logger.debug(registers)
         return registers
-
-
-reg = RegisterAssembler()
-reg.build([AnalogSignal, DiscreteSignal])

@@ -135,11 +135,3 @@ class XMLParser:
             )
         except (AttributeError, ValueError) as e:
             raise ValueError(f'Ошибка парсинга дискретного сигнала "{tag}": {e}') from e
-
-
-xml_parser = XMLParser(
-    file_path='src/infrastructure/test.xml',
-    xml_head_objects=XMLHeadObjects,
-    xml_iter_objects=XMLObjects,
-)
-xml_parser.parse()
