@@ -20,6 +20,25 @@ class RegisterAssembler:
                     bites |= (signal.current_value << signal.address.bit_index)
 
                 registers[reg_num] = bites  # сохраняем обратно
+            
+            if isinstance(signal, AnalogSignal):
+                reg_num = signal.address.address
+                if reg_num not in registers:
+                    registers[reg_num] = 0
+                value = registers[reg_num]
+                if not signal.forced:
+                    if signal.scaling_enabled and signal.scaling:
+                        value = signal.scaling.scale(signal.current_value_eu)
+                    else:
+                        value = signal.current_value_eu
+                elif signal.forced and signal.forced_input:
+                    value = signal.scaling.scale(signal.forced_value)
+                elif signal.forced and not signal.forced_input:
+                    value = signal.forced_value
+                
+                registers[reg_num] = int(value)
+                
+        return registers
 
 
 reg = RegisterAssembler()

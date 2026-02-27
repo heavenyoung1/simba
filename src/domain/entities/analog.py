@@ -20,4 +20,4 @@ class AnalogSignal:
     forced_input: bool  # False = raw, True = EU
     forced_value: float  # одно значение, интерпретация зависит от forced_input
 
-    current_value: float = 0.0
+    current_value_eu: float = 0.0
