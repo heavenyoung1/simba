@@ -15,3 +15,5 @@ class DiscreteSignal:
 
     forced: bool
     forced_value: bool
+
+    current_value: bool = False
