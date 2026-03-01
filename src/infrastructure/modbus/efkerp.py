@@ -5,10 +5,10 @@ from pymodbus.datastore import (
 )
 from pymodbus.server import StartAsyncTcpServer, StartTcpServer
 
-from application.logger import logger
-from application.register_assembler import RegisterAssembler
-from domain.entities.analog import AnalogSignal
-from domain.entities.discrete import DiscreteSignal
+from src.application.logger import logger
+from src.application.register_assembler import RegisterAssembler
+from src.domain.entities.analog import AnalogSignal
+from src.domain.entities.discrete import DiscreteSignal
 
 _SLAVE_ID = 0x00
 _FC_HOLDING_REGISTERS = 3

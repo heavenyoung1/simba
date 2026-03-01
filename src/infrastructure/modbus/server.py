@@ -5,9 +5,9 @@ from pymodbus.datastore import (
 )
 from pymodbus.server import StartAsyncTcpServer
 
-from application.register_assembler import RegisterAssembler
-from domain.entities.analog import AnalogSignal
-from domain.entities.discrete import DiscreteSignal
+from src.application.register_assembler import RegisterAssembler
+from src.domain.entities.analog import AnalogSignal
+from src.domain.entities.discrete import DiscreteSignal
 
 
 class ModbusServer:

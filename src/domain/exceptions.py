@@ -1,24 +1,21 @@
 class BaseCustomException(Exception):
-    """Базовый класс для всех исключений в приложении."""
+    '''Базовый класс для всех исключений в приложении.'''
 
     def __init__(self, message: str = 'Произошла ошибка'):
         self.message = message
         super().__init__(self.message)
 
-
-class DomainError(Exception):
-    """Базовое исключение домена."""
-
-    pass
+class ModbusError(Exception):
+    '''Базовое исключение клиента'''
 
 
-class SignalNotFoundError(DomainError):
-    """Сигнал с указанным тегом не найден в устройстве"""
+class ModbusConnectionError(ModbusError):
+    '''Нет соединения с сервером'''
 
 
-class SignalNotWritableError(DomainError):
-    """Попытка записи в сигнал только для чтения (DI или AI)."""
+class ModbusTimeoutError(ModbusError):
+    '''Сервер не ответил вовремя'''
 
-    def __init__(self, signal_tag: str, signal_type: str):
-        super().__init__(f"Сигнал '{signal_tag}' ({signal_type}) — только чтение")
-        self.signal_tag = signal_tag
+
+class ModbusResponseError(ModbusError):
+    '''Сервер вернул ошибку или некорректный ответ'''
