@@ -32,6 +32,7 @@ class ModbusClient:
         return self._client.connected
     
     async def connect(self) -> bool:
+        '''Открывает TCP-соединение'''
         if self.connected:
             logger.debug('Соединение уже установлено → %s:%d', self.host, self.port)
             return True
@@ -53,9 +54,9 @@ class ModbusClient:
             return False
             
     async def disconnect(self):
+        '''Закрывает TCP-соединение'''
         if self._client:
-            await self._client.close()
-            self._is_connected = False
+            self._client.close()
             logger.info('Modbus-соединение закрыто → %s:%d', self.host, self.port)
 
     async def __aenter__(self):
@@ -66,7 +67,42 @@ class ModbusClient:
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         await self.disconnect()
 
+    async def ensure_connected(self) -> None:
+        '''Гарантирует подключение или кидает исключение'''
+        if not await self.connect():
+            raise RuntimeError(f'Не удалось подключиться к {self.host}:{self.port}')
 
+    async def read_holding_registers(
+        self,
+        address: int,
+        count: int = 1,
+    ):
+        try:
+            result = await self._client.read_holding_registers(
+                address=address,
+                count=count,
+                device_id=self.slave
+            )
 
+            if result.isError():
+                raise RuntimeError('Ошибка ModBus протокола ')
 
+            return result.registers
+        
+        except Exception as e:
+            logger.error('Ошибка чтения [addr=%d, count=%d]: %s', address, count, e)
+            raise
 
+    
+    async def write_registers(self, registers: dict[int, int]) -> None:
+        try:
+            for addr, value in registers.items():
+                result = await self._client.write_register(
+                    address=addr,
+                    value=value,
+                    device_id=self.slave,
+                )
+                if result.isError():
+                    raise RuntimeError('Ошибка ModBus протокола ')
+        except Exception as e:
+            raise
