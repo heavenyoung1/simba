@@ -14,6 +14,9 @@ class ModbusClient:
         slave: int = 1,                     # ID устройства на шине Modbus
         reconnect_delay: float = 1.0,       # задержка перед повторным подключением
         reconnect_delay_max: float = 60.0,  # MAX задержка перед повторным подключением
+
+        zero_based: bool = True,            # True = адреса уже физические (от 0)
+                                            # False = адреса Modbus (от 1), вычитаем 1
     ):
         self.host=host
         self.port=port
