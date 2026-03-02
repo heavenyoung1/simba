@@ -24,12 +24,16 @@ class XMLObjects(Enum):
     AI = 'Analog'
     DI = 'Discrete'
 
-class FunctionCode(Enum):
-    READ_COILS               = 0x01
-    READ_DISCRETE_INPUTS     = 0x02
-    READ_HOLDING_REGISTERS   = 0x03
-    READ_INPUT_REGISTERS     = 0x04
-    WRITE_SINGLE_COIL        = 0x05
-    WRITE_SINGLE_REGISTER    = 0x06
-    WRITE_MULTIPLE_COILS     = 0x0F
-    WRITE_MULTIPLE_REGISTERS = 0x10
+class ModbusFunction(Enum):
+    COIL                = '0x'
+    DISCRETE_INPUT      = '1x'
+    INPUT_REGISTER      = '3x'
+    HOLDING_REGISTER    = '4x'
+
+    @classmethod
+    def find_method(cls, raw: str) -> 'ModbusFunction':
+        prefix = raw[:2].lower()
+        try:
+            return cls(prefix)
+        except ValueError:
+            raise ValueError(f'Неизвестный префикс в адресе: {raw!r}')
